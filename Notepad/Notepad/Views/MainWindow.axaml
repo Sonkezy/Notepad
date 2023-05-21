@@ -1,0 +1,46 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Notepad.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:converters="clr-namespace:Notepad.ViewModels.Converters"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="700"
+		Width="500" Height="700"
+        x:Class="Notepad.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Notepad"
+		CanResize="False">
+
+	<Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+	<Window.Styles>
+		<StyleInclude Source="/Assets/Styles.axaml"/>
+	</Window.Styles>
+	<Window.Resources>
+		<converters:FileTypeConverter x:Key="fileTypeConverter"/>
+	</Window.Resources>
+	<Panel>
+		<Grid RowDefinitions="12*,*,*" IsVisible="{Binding !ExplorerMode}">
+			<TextBox Name="contentTextBox" Text="{Binding ContentBox}" AcceptsReturn="True" TextWrapping="NoWrap"></TextBox>
+			<Button Name="openButton" Grid.Row="1" Classes="b1" Command="{Binding Open}">Открыть</Button>
+			<Button Name="saveButton" Grid.Row="2" Classes="b1" Command="{Binding Save}">Сохранить</Button>
+		</Grid>
+		<Grid RowDefinitions="10*,*,*" ColumnDefinitions="*,*" IsVisible="{Binding ExplorerMode}">
+			<ListBox Items="{Binding FileList}" SelectedItem="{Binding SelectedItem}" DoubleTapped="DoubleTap" Name="fileListBox" Grid.ColumnSpan="2">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid ColumnDefinitions="*,9*">
+							<Image Width="40" Height="40" Source="{Binding Type, Converter={StaticResource fileTypeConverter}}" Margin="5 0 5 0"/>
+							<TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+			<TextBox Name="fileTextBox" Text="{Binding FileBox}" Grid.Row="1" Grid.ColumnSpan="2" TextWrapping="NoWrap"></TextBox>
+			<Button Name="okButton" Grid.Column="0" Grid.Row="2" Classes="b2" Command="{Binding Ok}" Content="{Binding ButtonMode}"/>
+			<Button Name="cancelButton" Grid.Column="1" Grid.Row="2" Classes="b2" Command="{Binding Cancel}">Отмена</Button>
+		</Grid>
+	</Panel>
+
+</Window>
